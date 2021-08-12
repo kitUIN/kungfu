@@ -1,0 +1,10 @@
+{
+  "button.kungfu.done": "完成",
+  "itemGroup.KungFu_group": "功夫",
+  "item.kungfu.test_qi_up": "测试工具-增加气值",
+  "item.kungfu.test_qi_down": "测试工具-减小气值",
+  "item.kungfu.miji.yijinjing": "§b易筋经§b",
+  "kungfu.miji.yijinying.text": "§e少林武功\n§e内功",
+  "kungfu.miji.yijinying.success": "§6您已经习得§b[易筋经]",
+  "gui.kungfu.first.save": "阿巴"
+}
