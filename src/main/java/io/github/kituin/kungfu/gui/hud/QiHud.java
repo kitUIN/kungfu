@@ -32,8 +32,9 @@ public class QiHud extends AbstractGui {
         int positionY = Config.QIHUDY.get().intValue();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(HUD);
-        blit(matrixStack, positionX, positionY, 0, 0, 50, 50, 256, 256);
-        blit(matrixStack, positionX, positionY, 50, 50-50*current_height, 50, 50, 256, 256);
+        int num = (int) (current_height*64);
+        blit(matrixStack, positionX, positionY, 64, 0, 64, 64, 128, 128);
+        blit(matrixStack, positionX,positionY+64-num, 0, 64-num, 64, num, 128, 128);
         drawCenteredString(matrixStack, minecraft.fontRenderer, String.format("%.2f", current_height*100)+"%", positionX+25 , positionY+25, 0xeb0505);
 
     }

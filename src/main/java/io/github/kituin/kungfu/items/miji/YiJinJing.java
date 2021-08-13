@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.*;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
@@ -32,10 +33,11 @@ public class YiJinJing extends Item {
     public YiJinJing() {
         super(new Properties().group(ModGroup.ITEM_GROUP));
     }
-
+    private static ItemStack itemStack;
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn){
+        itemStack =stack;
         if (YIJINJING_LEARNED){
             tooltip.add(new StringTextComponent(I18n.format(MOD_ID+".miji.learned.yes", TextFormatting.RESET)));
         }else{
@@ -67,19 +69,19 @@ public class YiJinJing extends Item {
         if (!worldIn.isRemote && handIn == Hand.MAIN_HAND) {
             LazyOptional<IKungFuCapability> KungfuCap = playerIn.getCapability(ModCapability.KUNGFU_CAPABILITY);
             KungfuCap.ifPresent((k) -> {
-
-                        if(k.getKungfuNBT().contains(NAME)){
-                            playerIn.sendMessage(new TranslationTextComponent(ITEM_MESSAGE+NAME+".already"), playerIn.getUniqueID());
+                TranslationTextComponent item = new TranslationTextComponent(ITEM+"miji."+NAME);
+                Style style = item.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM,new HoverEvent.ItemHover(itemStack)));
+                    if(k.getKungfuNBT().contains(NAME)){
+                        playerIn.sendMessage(new TranslationTextComponent(ITEM_MESSAGE+NAME+".already.one").appendSibling(item.setStyle(style)).appendSibling(new TranslationTextComponent(ITEM_MESSAGE+NAME+".already.two")), playerIn.getUniqueID());
                             System.out.println(k.getKungfuNBT());
-                        }else {
-                            k.setGongfaNBT(NAME,"neigong",1,0);
-                            System.out.println(k.getKungfuNBT());
-                            MinecraftForge.EVENT_BUS.post(new MijiChanged(playerIn,NAME,1,0,0));
-                            playerIn.sendMessage(new TranslationTextComponent(ITEM_MESSAGE+NAME+".success"), playerIn.getUniqueID());
-                        }
+                    }else {
+                        k.setGongfaNBT(NAME,"neigong",1,0);
+                        MinecraftForge.EVENT_BUS.post(new MijiChanged(playerIn,NAME,1,0,0));
+                        playerIn.sendMessage(new TranslationTextComponent(ITEM_MESSAGE+NAME+".success.one").appendSibling(item.setStyle(style)).appendSibling(new TranslationTextComponent(ITEM_MESSAGE+NAME+".success.two")), playerIn.getUniqueID());
+                    }
 
                         // playerIn.sendMessage(new TranslationTextComponent(String.valueOf(k.getKungfuNBT())), playerIn.getUniqueID());
-                    }
+                }
             );
         }
         return super.onItemRightClick(worldIn, playerIn, handIn);

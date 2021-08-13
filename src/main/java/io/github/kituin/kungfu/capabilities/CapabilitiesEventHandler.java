@@ -131,6 +131,10 @@ public class CapabilitiesEventHandler {
         TEMP_HUD1X = positionX;
         TEMP_HUD1Y = positionY;
     }
+    @SubscribeEvent
+    public static void onmouse(GuiScreenEvent.MouseClickedEvent event){
+        System.out.println(event.getMouseX() +"  "+ event.getMouseY());
+    }
     //use item Listener
     @SubscribeEvent
     public static void onItemFinish(LivingEntityUseItemEvent.Finish event){
