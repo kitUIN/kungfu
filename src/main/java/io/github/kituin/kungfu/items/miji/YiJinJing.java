@@ -25,17 +25,18 @@ import java.util.List;
 
 import static io.github.kituin.kungfu.Utils.*;
 import static io.github.kituin.kungfu.config.MiJiConfig.fileconfig;
+import static io.github.kituin.kungfu.utils.LearnedMiji.YIJINJING_LEARNED;
 
 public class YiJinJing extends Item {
     public static final String NAME = "yijinjing";
     public YiJinJing() {
         super(new Properties().group(ModGroup.ITEM_GROUP));
     }
-    public static boolean LEARNED = false;
+
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn){
-        if (LEARNED){
+        if (YIJINJING_LEARNED){
             tooltip.add(new StringTextComponent(I18n.format(MOD_ID+".miji.learned.yes", TextFormatting.RESET)));
         }else{
             tooltip.add(new StringTextComponent(I18n.format(MOD_ID+".miji.learned.no", TextFormatting.RESET)));
@@ -59,19 +60,6 @@ public class YiJinJing extends Item {
                 TextFormatting.RESET)).appendString(String.format("%.3f",(double)fileconfig.get(NAME+".recuperation"))+"/tick"));
     }
 
-    @Override
-    public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (entityIn instanceof ServerPlayerEntity){
-            LazyOptional<IKungFuCapability> KungfuCap = entityIn.getCapability(ModCapability.KUNGFU_CAPABILITY);
-            KungfuCap.ifPresent((k) -> {
-                LEARNED = k.getKungfuNBT().contains(NAME);
-                    }
-            );
-        }else{
-            LEARNED =false;
-        }
-        super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
-    }
 
     @ParametersAreNonnullByDefault
     @Override
@@ -79,10 +67,13 @@ public class YiJinJing extends Item {
         if (!worldIn.isRemote && handIn == Hand.MAIN_HAND) {
             LazyOptional<IKungFuCapability> KungfuCap = playerIn.getCapability(ModCapability.KUNGFU_CAPABILITY);
             KungfuCap.ifPresent((k) -> {
+
                         if(k.getKungfuNBT().contains(NAME)){
                             playerIn.sendMessage(new TranslationTextComponent(ITEM_MESSAGE+NAME+".already"), playerIn.getUniqueID());
+                            System.out.println(k.getKungfuNBT());
                         }else {
                             k.setGongfaNBT(NAME,"neigong",1,0);
+                            System.out.println(k.getKungfuNBT());
                             MinecraftForge.EVENT_BUS.post(new MijiChanged(playerIn,NAME,1,0,0));
                             playerIn.sendMessage(new TranslationTextComponent(ITEM_MESSAGE+NAME+".success"), playerIn.getUniqueID());
                         }

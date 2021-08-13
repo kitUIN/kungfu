@@ -12,6 +12,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -27,10 +29,12 @@ import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import static io.github.kituin.kungfu.Utils.ITEM_MESSAGE;
 import static io.github.kituin.kungfu.Utils.MOD_ID;
 import static io.github.kituin.kungfu.config.MiJiConfig.fileconfig;
 import static io.github.kituin.kungfu.gui.SettingGUI.TEMP_HUD1X;
 import static io.github.kituin.kungfu.gui.SettingGUI.TEMP_HUD1Y;
+import static io.github.kituin.kungfu.utils.LearnedMiji.YIJINJING_LEARNED;
 
 @Mod.EventBusSubscriber()
 public class CapabilitiesEventHandler {
@@ -50,29 +54,35 @@ public class CapabilitiesEventHandler {
     public static void onMijiChaged(MijiChanged event){
         String name = event.getMijiName();
         PlayerEntity player = event.getPlayerIn();
-
         if(player instanceof ServerPlayerEntity){
             fileconfig.load();
             LazyOptional<IQiCapability> QiCap = player.getCapability(ModCapability.QI_CAPABILITY);
             LazyOptional<IKungFuCapability> KungfuCap = player.getCapability(ModCapability.KUNGFU_CAPABILITY);
             KungfuCap.ifPresent((k)->{
                 miji = k.getKungfuNBT();
-                String type = fileconfig.get(name+".type");
-                CompoundNBT gongfa = miji.getCompound(type);
+                CompoundNBT gongfa = miji.getCompound(name);
                 int level = gongfa.getInt("level");
                 int maxPro = fileconfig.getInt(name+".proficiencyPer")*(level-1)+fileconfig.getInt(name+".proficiency");
                 if( level < fileconfig.getInt(name+".level")&& ( event.getProficiencyNow()>= maxPro)){
                     int nowPro = event.getProficiencyNow()-maxPro;
+                    System.out.println(nowPro);
+                    System.out.println(maxPro);
                     gongfa.putInt("level",level+1);
                     gongfa.putInt("proficiency",nowPro);
-                    miji.put(type,gongfa);
+                    miji.put(name,gongfa);
                     k.setKungfuNBT(miji);
+                    System.out.println(k.getKungfuNBT());
+                    player.sendMessage(new TranslationTextComponent("message.kungfu.miji.levelup.one"
+                    ).appendSibling(new TranslationTextComponent("item.kungfu.miji."+name)
+                    ).appendSibling(new TranslationTextComponent("message.kungfu.miji.levelup.two")
+                    ).appendString(String.valueOf(level+1)
+                    ).appendSibling(new TranslationTextComponent("message.kungfu.miji.levelup.three")),player.getUniqueID());
                     MinecraftForge.EVENT_BUS.post(new MijiChanged(player,name,level,event.getProficiencyNow(),nowPro));
                 }
             });
             QiCap.ifPresent((q) -> {
-                int level = miji.getCompound("neigong").getInt("level");
-                q.setMaximum(+fileconfig.getInt(name+"qiPer")*(level-1));
+                int level = miji.getCompound(name).getInt("level");
+                q.setMaximum(fileconfig.getInt(name+".qi")+fileconfig.getInt(name+".qiPer")*(level-1));
             });
         }
     }
@@ -96,6 +106,10 @@ public class CapabilitiesEventHandler {
         if(event.side == LogicalSide.SERVER){
             PlayerEntity player =event.player;
             if(player instanceof ServerPlayerEntity){
+                LazyOptional<IKungFuCapability> KungfuCap = player.getCapability(ModCapability.KUNGFU_CAPABILITY);
+                KungfuCap.ifPresent((k) -> {
+                            YIJINJING_LEARNED = k.getKungfuNBT().contains("yijinjing");
+                        });
                 LazyOptional<IQiCapability> QiCap = player.getCapability(ModCapability.QI_CAPABILITY);
                 QiCap.ifPresent((q) -> {
                     q.speedUp(player);

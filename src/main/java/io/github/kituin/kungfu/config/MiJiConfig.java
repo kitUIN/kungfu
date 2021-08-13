@@ -26,7 +26,7 @@ public class MiJiConfig {
         fileconfig.load();
         if (fileconfig.isEmpty()){
             LOGGER.info("create miji default config!");
-        this.mijiSet("yijinjing","neigong",5,
+            this.mijiSet("yijinjing","neigong",5,
                 100,100,
                 100F,100F,
                 0.025F,0F,
@@ -34,7 +34,8 @@ public class MiJiConfig {
                 0F,0F,
                 1.0F,0F);
         //System.out.println(fileconfig.valueMap());
-        fileconfig.save();}
+            fileconfig.save();
+        }
     }
     public void mijiSet(String name ,String type, int level ,
                         int proficiency,int proficiencyPer,

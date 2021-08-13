@@ -13,9 +13,13 @@
   "item.kungfu.test_miji_proficiency_up": "测试工具-增加内功熟练度",
   "item.kungfu.miji.yijinjing": "§b易筋经§b",
   "text.item.kungfu.yijinjing.one": "§e少林武功",
+  "message.kungfu.miji.levelup.one": "您的功法",
+  "message.kungfu.miji.levelup.two": "已经升级为",
+  "message.kungfu.miji.levelup.three": "级",
   "message.item.kungfu.yijinjing.success": "§6您习得§b[易筋经]§6！",
   "message.item.kungfu.yijinjing.already": "§6您已经习得§b[易筋经]§6了",
   "message.item.kungfu.test_qi_up":"您的气提升到",
   "message.item.kungfu.test_qi_down":"您的气下降到",
+  "message.item.kungfu.test_miji_proficiency_up": "您的§b[易筋经]熟练度上升了",
   "gui.kungfu.first.save": "阿巴"
 }

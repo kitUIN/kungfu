@@ -1,12 +1,9 @@
 package io.github.kituin.kungfu.capabilities.kungfu;
 
-import io.github.kituin.kungfu.items.miji.GitmijiList;
 import net.minecraft.nbt.CompoundNBT;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class KungFuCapability implements  IKungFuCapability{
     private static final Logger LOGGER = LogManager.getLogger();
@@ -17,26 +14,22 @@ public class KungFuCapability implements  IKungFuCapability{
     public KungFuCapability(){
 
     }
-    public CompoundNBT setMiJiNBT(String mijiName, int level, int proficiency) {
+    public CompoundNBT setMiJiNBT(int level, int proficiency) {
         CompoundNBT mijiNBT = new CompoundNBT();
-        mijiNBT.putString("name",mijiName);
         mijiNBT.putInt("level",level);
         mijiNBT.putInt("proficiency",proficiency);
         return mijiNBT;
     }
+    @Override
     public void addProficiency(String mijiName,String type,int value){
-        CompoundNBT neigongNBT = this.kungfuNBT.getCompound(type);
-        CompoundNBT mijiNBT =  neigongNBT.getCompound(mijiName);
-        mijiNBT.putInt("proficiency",mijiNBT.getInt("proficiency")+value);
-        neigongNBT.put(mijiName,mijiNBT);
-        this.kungfuNBT.put(type,neigongNBT);
+        CompoundNBT gongfa = this.kungfuNBT.getCompound(mijiName);
+        gongfa.putInt("proficiency",gongfa.getInt("proficiency")+value);
+        this.kungfuNBT.put(mijiName,gongfa);
     }
     @Override
     public void setGongfaNBT(String mijiName,String type, int level, int proficiency) {
-        if(this.kungfuNBT.getCompound(type).isEmpty()){
-            CompoundNBT neigongNBT = new CompoundNBT();
-            neigongNBT.put(mijiName,this.setMiJiNBT(mijiName,level,proficiency));
-            this.kungfuNBT.put(type,neigongNBT);
+        if(!this.kungfuNBT.contains(mijiName)){
+            this.kungfuNBT.put(mijiName,this.setMiJiNBT(level,proficiency));
         }
     }
     @Override
