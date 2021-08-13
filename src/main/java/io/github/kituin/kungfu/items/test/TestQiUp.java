@@ -16,7 +16,10 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static io.github.kituin.kungfu.Utils.ITEM_MESSAGE;
+
 public class TestQiUp extends Item {
+    public static final String NAME = "test_qi_up";
     public TestQiUp() {
         super(new Properties().group(ModGroup.ITEM_GROUP));
     }
@@ -27,7 +30,7 @@ public class TestQiUp extends Item {
             LazyOptional<IQiCapability> speedCap = playerIn.getCapability(ModCapability.QI_CAPABILITY);
             speedCap.ifPresent((l) -> {
                         l.setCurrent(l.getCurrent()+10);
-                        playerIn.sendMessage(new TranslationTextComponent("message.KungFu_qi_show"+l.getCurrent()), playerIn.getUniqueID());
+                        playerIn.sendMessage(new TranslationTextComponent(ITEM_MESSAGE+NAME).appendSibling(new TranslationTextComponent(String.valueOf(l.getCurrent()))), playerIn.getUniqueID());
                     }
             );
         }

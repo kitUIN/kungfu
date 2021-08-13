@@ -1,19 +1,23 @@
 package io.github.kituin.kungfu.events;
 
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.eventbus.api.Event;
 
 public class MijiChanged extends Event {
     /**
-     * fired on miji learning ,miji level up
+     * fired on Learning miji,Level up in miji,Increased proficiency in miji
      *
      */
-    public final String mijiName;
-    public final int level;
-    public final int proficiencyPre;
-    public final int proficiencyNow;
+    private final PlayerEntity playerIn;
+    private final String mijiName;
+    private final int level;
+    private final int proficiencyPre;
+    private final int proficiencyNow;
 
-    public MijiChanged(String mijiName,int level,int proficiencyPre,int proficiencyNow){
+
+    public MijiChanged(PlayerEntity playerIn,String mijiName,int level,int proficiencyPre,int proficiencyNow){
+        this.playerIn=playerIn;
         this.mijiName = mijiName;
         this.level = level;
         this.proficiencyNow = proficiencyNow;
@@ -34,5 +38,9 @@ public class MijiChanged extends Event {
 
     public String getMijiName() {
         return mijiName;
+    }
+
+    public PlayerEntity getPlayerIn() {
+        return playerIn;
     }
 }

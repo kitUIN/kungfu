@@ -2,6 +2,7 @@ package io.github.kituin.kungfu.gui.hud;
 
 import io.github.kituin.kungfu.capabilities.qi.IQiCapability;
 import io.github.kituin.kungfu.capabilities.ModCapability;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,13 +19,16 @@ import org.apache.logging.log4j.Logger;
 public class QiHudHandler {
     private static float height = 1;
     private static final Logger LOGGER = LogManager.getLogger();
+    private static boolean HUD_ON = false;
     @SubscribeEvent
     public static void onOverlayRender(RenderGameOverlayEvent event) {
         if (event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
             return;
         }
-        QiHud obsidianGUI = new QiHud(event.getMatrixStack());
-        obsidianGUI.render(height);
+        if(HUD_ON){
+            QiHud obsidianGUI = new QiHud(event.getMatrixStack());
+            obsidianGUI.render(height);
+        }
     }
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent event) {
@@ -32,6 +36,7 @@ public class QiHudHandler {
         if(player instanceof ServerPlayerEntity){
             LazyOptional<IQiCapability> speedCap = player.getCapability(ModCapability.QI_CAPABILITY);
             speedCap.ifPresent((l) -> {
+                HUD_ON = l.getMaximum()>0;
                 height =l.getCurrent()/ l.getMaximum();
                 l.recuperation();
             });

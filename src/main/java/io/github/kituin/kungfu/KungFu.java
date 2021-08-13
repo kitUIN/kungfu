@@ -8,6 +8,8 @@ import io.github.kituin.kungfu.items.ItemRegistry;
 import io.github.kituin.kungfu.keyboard.OpenGui;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -49,7 +51,10 @@ public class KungFu {
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(MijiChanged.class);
+
         miJiConfig = new MiJiConfig();
+
+
 
 
     }

@@ -10,10 +10,14 @@ import io.github.kituin.kungfu.events.MijiChanged;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -24,6 +28,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import static io.github.kituin.kungfu.Utils.MOD_ID;
+import static io.github.kituin.kungfu.config.MiJiConfig.fileconfig;
 import static io.github.kituin.kungfu.gui.SettingGUI.TEMP_HUD1X;
 import static io.github.kituin.kungfu.gui.SettingGUI.TEMP_HUD1Y;
 
@@ -32,6 +37,7 @@ public class CapabilitiesEventHandler {
     private static final Logger LOGGER = LogManager.getLogger();
     private static double positionY= Config.QIHUDY.get();
     private static double positionX = Config.QIHUDX.get();
+    private static CompoundNBT miji = new CompoundNBT();
     @SubscribeEvent
     public static void onAttachCapabilityEvent(AttachCapabilitiesEvent<Entity> event) {
         Entity entity = event.getObject();
@@ -42,7 +48,33 @@ public class CapabilitiesEventHandler {
     }
     @SubscribeEvent
     public static void onMijiChaged(MijiChanged event){
-        System.out.println(event.mijiName);
+        String name = event.getMijiName();
+        PlayerEntity player = event.getPlayerIn();
+
+        if(player instanceof ServerPlayerEntity){
+            fileconfig.load();
+            LazyOptional<IQiCapability> QiCap = player.getCapability(ModCapability.QI_CAPABILITY);
+            LazyOptional<IKungFuCapability> KungfuCap = player.getCapability(ModCapability.KUNGFU_CAPABILITY);
+            KungfuCap.ifPresent((k)->{
+                miji = k.getKungfuNBT();
+                String type = fileconfig.get(name+".type");
+                CompoundNBT gongfa = miji.getCompound(type);
+                int level = gongfa.getInt("level");
+                int maxPro = fileconfig.getInt(name+".proficiencyPer")*(level-1)+fileconfig.getInt(name+".proficiency");
+                if( level < fileconfig.getInt(name+".level")&& ( event.getProficiencyNow()>= maxPro)){
+                    int nowPro = event.getProficiencyNow()-maxPro;
+                    gongfa.putInt("level",level+1);
+                    gongfa.putInt("proficiency",nowPro);
+                    miji.put(type,gongfa);
+                    k.setKungfuNBT(miji);
+                    MinecraftForge.EVENT_BUS.post(new MijiChanged(player,name,level,event.getProficiencyNow(),nowPro));
+                }
+            });
+            QiCap.ifPresent((q) -> {
+                int level = miji.getCompound("neigong").getInt("level");
+                q.setMaximum(+fileconfig.getInt(name+"qiPer")*(level-1));
+            });
+        }
     }
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
@@ -72,6 +104,7 @@ public class CapabilitiesEventHandler {
             }
         }
     }
+
     @SubscribeEvent
     public static void onBreakEvent(PlayerEvent.BreakSpeed event){
         PlayerEntity player = event.getPlayer();

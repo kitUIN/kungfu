@@ -13,19 +13,34 @@ public class KungFuCapability implements  IKungFuCapability{
 
     private CompoundNBT kungfuNBT = new CompoundNBT();
 
+
     public KungFuCapability(){
 
     }
-    @Override
-    public void setMiJiNBT(String mijiName, int level, int proficiency) {
+    public CompoundNBT setMiJiNBT(String mijiName, int level, int proficiency) {
         CompoundNBT mijiNBT = new CompoundNBT();
         mijiNBT.putString("name",mijiName);
         mijiNBT.putInt("level",level);
         mijiNBT.putInt("proficiency",proficiency);
-        this.kungfuNBT.put(mijiName,mijiNBT);
+        return mijiNBT;
+    }
+    public void addProficiency(String mijiName,String type,int value){
+        CompoundNBT neigongNBT = this.kungfuNBT.getCompound(type);
+        CompoundNBT mijiNBT =  neigongNBT.getCompound(mijiName);
+        mijiNBT.putInt("proficiency",mijiNBT.getInt("proficiency")+value);
+        neigongNBT.put(mijiName,mijiNBT);
+        this.kungfuNBT.put(type,neigongNBT);
     }
     @Override
-    public void SetKungfuNBT(CompoundNBT kungfuNBT){
+    public void setGongfaNBT(String mijiName,String type, int level, int proficiency) {
+        if(this.kungfuNBT.getCompound(type).isEmpty()){
+            CompoundNBT neigongNBT = new CompoundNBT();
+            neigongNBT.put(mijiName,this.setMiJiNBT(mijiName,level,proficiency));
+            this.kungfuNBT.put(type,neigongNBT);
+        }
+    }
+    @Override
+    public void setKungfuNBT(CompoundNBT kungfuNBT){
         this.kungfuNBT = kungfuNBT;
     }
 

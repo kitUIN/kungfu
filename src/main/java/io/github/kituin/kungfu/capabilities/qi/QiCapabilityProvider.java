@@ -23,7 +23,7 @@ public class QiCapabilityProvider implements ICapabilityProvider, INBTSerializab
     @Nonnull
     IQiCapability getOrCreateCapability() {
         if (speedUpCapability == null) {
-            this.speedUpCapability = new QiCapability(100.00F,100.00F,0.025F,0.4F,0.00F,1.0F);
+            this.speedUpCapability = new QiCapability(0F,0F,0.025F,0.4F,0.00F,1.0F);
         }
         return this.speedUpCapability;
     }

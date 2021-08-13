@@ -1,10 +1,21 @@
 {
+  "kungfu.miji.neigong": "类型: §e内功",
+  "kungfu.miji.learned.yes": "§e[已习得]",
+  "kungfu.miji.learned.no": "[未习得]",
+  "kungfu.miji.level": "最大等级: ",
+  "kungfu.miji.proficiency": "熟练度: ",
+  "kungfu.miji.qi": "增加气值: ",
+  "kungfu.miji.recuperation": "气回复速度: ",
   "button.kungfu.done": "完成",
   "itemGroup.KungFu_group": "功夫",
   "item.kungfu.test_qi_up": "测试工具-增加气值",
   "item.kungfu.test_qi_down": "测试工具-减小气值",
+  "item.kungfu.test_miji_proficiency_up": "测试工具-增加内功熟练度",
   "item.kungfu.miji.yijinjing": "§b易筋经§b",
-  "kungfu.miji.yijinying.text": "§e少林武功\n§e内功",
-  "kungfu.miji.yijinying.success": "§6您已经习得§b[易筋经]",
+  "text.item.kungfu.yijinjing.one": "§e少林武功",
+  "message.item.kungfu.yijinjing.success": "§6您习得§b[易筋经]§6！",
+  "message.item.kungfu.yijinjing.already": "§6您已经习得§b[易筋经]§6了",
+  "message.item.kungfu.test_qi_up":"您的气提升到",
+  "message.item.kungfu.test_qi_down":"您的气下降到",
   "gui.kungfu.first.save": "阿巴"
 }
